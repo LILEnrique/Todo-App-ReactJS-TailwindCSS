@@ -1,4 +1,4 @@
-# Todo App 🌤️
+# Todo App 📓
 
 Aplicación del clima construida utilizando ReactJS y Tailwind CSS. Proporciona a los usuarios una agenda interactiva para tareas del día a día.
 
