@@ -101,7 +101,7 @@ function App() {
     <div className='bg min-h-screen font-inter h-full text-gray-100 flex items-center justify-center py-20 px-5'>
       <div className='container flex flex-col max-w-xl'>
         <h1 className="text-5xl font-black ">
-          Agenda x CatPsycho 📑
+          Organiza tu día a día 📑
         </h1>
         <TodoInput addTodo={addTodo} />
         <TodoList
