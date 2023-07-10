@@ -18,7 +18,7 @@ La aplicación está diseñada para ser responsive, asegurando una experiencia f
 
 A través del siguiente comando puedes descargar el repositorio:
 ```
-git clone https://github.com/LILEnrique/Todo-App-ReactJS-TailwindCSS
+git clone https://github.com/LILEnrique/Todo-App-ReactJS-TailwindCSS-Firebase
 ```
 ### Configuración de Firebase 🔥
 
