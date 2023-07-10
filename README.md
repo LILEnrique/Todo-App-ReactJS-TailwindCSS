@@ -45,7 +45,7 @@ const firebaseConfig = {
 1. Navega al directorio del proyecto
 
 ```
-cd Todo-App-ReactJS-TailwindCSS
+cd Todo-App-ReactJS-TailwindCSS-Firebase
 ```
 2. Instala las dependencias
 
