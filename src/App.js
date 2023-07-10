@@ -1,120 +1,106 @@
-import { useEffect, useState } from 'react';
-import { TodoInput } from './components/TodoInput';
-import { TodoList } from './components/TodoList';
+import { useEffect, useState } from "react";
+import { TodoList } from "./components/TodoList";
+import { db } from "./firebase";
+import { query, collection, onSnapshot, updateDoc, doc, addDoc, deleteDoc } from "firebase/firestore";
 
 function App() {
-  const [todos, setTodos] = useState([
-    {
-      id: 1,
-      title: 'Aprender NextJS',
-      completed: false,
-    },
-    {
-      id: 2,
-      title: 'Leer documentación Framer Motion',
-      completed: true,
-    },
-    {
-      id: 3,
-      title: 'Salir a andar en bicicleta',
-      completed: false,
-    },
-    {
-      id: 4,
-      title: 'Ver una película',
-      completed: false,
-    },
-    {
-      id: 5,
-      title: 'Cocinar',
-      completed: true,
-    }
-  ])
-
-  const [activeFilter, setActiveFilter] = useState('todas');
-
+  const [todos, setTodos] = useState([]);
+  const [input, setInput] = useState("");
+  const [activeFilter, setActiveFilter] = useState("todas");
   const [filteredTodos, setFilteredTodos] = useState(todos);
 
-  const addTodo = (title) => {
-    const lastId = todos.length > 0 ? todos[todos.length - 1].id : 1;
-
-    const newTodo = {
-      id: lastId + 1,
-      title,
-      completed: false
+  // Crear tarea
+  const createTodo = async (e) => {
+    e.preventDefault(e);
+    if (input === "") {
+      alert("Please enter a valid todo");
+      return;
     }
+    await addDoc(collection(db, "todos"), {
+      text: input,
+      completed: false,
+    });
+    setInput("");
+  };
+  // Leer tarea desde firebase
+  useEffect(() => {
+    const q = query(collection(db, "todos"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      let todosArr = [];
+      querySnapshot.forEach((doc) => {
+        todosArr.push({ ...doc.data(), id: doc.id });
+      });
+      setTodos(todosArr);
+    });
+    return () => unsubscribe();
+  }, []);
 
-    const todoList = [...todos]
-    todoList.push(newTodo);
-
-    setTodos(todoList);
-  }
-
-  const handleSetComplete = (id) => {
-
-    const updatedList = todos.map(todo => {
-      if (todo.id === id) {
-        return { ...todo, completed: !todo.completed }
-      }
-      return todo;
-    })
-
-    setTodos(updatedList);
-  }
-
-  const handleClearComplete = () => {
-    const updatedList = todos.filter(todo => !todo.completed);
-    setTodos(updatedList);
+  // Actualizar tarea en firebase
+  const toggleComplete = async (todo) => {
+    await updateDoc(doc(db, "todos", todo.id), {
+      completed: !todo.completed,
+    });
   };
 
-  const handleDelete = (id) => {
-    const updatedList = todos.filter(todo => todo.id !== id);
-    setTodos(updatedList);
-  }
+  // Eliminar tarea
+  const deleteTodo = async (id) => {
+    await deleteDoc(doc(db, "todos", id));
+  };
+
+  //Borrar completadas
+  const handleClearComplete = async () => {
+    const completedTodos = todos.filter((todo) => todo.completed);
+    await Promise.all(completedTodos.map((todo) => deleteTodo(todo.id)));
+  };
 
   const showAllTodos = () => {
-    setActiveFilter('todas')
-  }
+    setActiveFilter("todas");
+  };
 
   const showActiveTodos = () => {
-    setActiveFilter('activas')
-  }
+    setActiveFilter("activas");
+  };
 
   const showCompletedTodos = () => {
-    setActiveFilter('completadas')
-  }
+    setActiveFilter("completadas");
+  };
 
   useEffect(() => {
-    if (activeFilter === 'todas') {
+    if (activeFilter === "todas") {
       setFilteredTodos(todos);
-    } else if (activeFilter === 'activas') {
-      const activeTodos = todos.filter(todo => todo.completed === false);
+    } else if (activeFilter === "activas") {
+      const activeTodos = todos.filter((todo) => todo.completed === false);
       setFilteredTodos(activeTodos);
-    } else if (activeFilter === 'completadas') {
-      const completedTodos = todos.filter(todo => todo.completed === true);
+    } else if (activeFilter === "completadas") {
+      const completedTodos = todos.filter((todo) => todo.completed === true);
       setFilteredTodos(completedTodos);
     }
-
   }, [activeFilter, todos]);
 
   return (
-    <div className='bg min-h-screen font-inter h-full text-gray-100 flex items-center justify-center py-20 px-5'>
-      <div className='container flex flex-col max-w-xl'>
-        <h1 className="text-5xl font-black ">
-          Organiza tu día a día 📑
-        </h1>
-        <TodoInput addTodo={addTodo} />
+    <div className="bg min-h-screen font-inter h-full text-gray-100 flex items-center justify-center py-20 px-5">
+      <div className="container flex flex-col max-w-xl">
+        <h1 className="text-5xl font-black ">Organiza tu día a día 📑</h1>
+        <form onSubmit={createTodo} className="mt-6 relative">
+          <input
+            className="focus:shadow-lg font-Inter focus:shadow-primary pl-12 w-full py-4 bg-zinc-100 bg-opacity-20 rounded-xl outline-none transition-all duration-300 ease-in-out"
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Agregar tarea"
+          />
+        </form>
         <TodoList
           activeFilter={activeFilter}
           todos={filteredTodos}
           showAllTodos={showAllTodos}
           showActiveTodos={showActiveTodos}
           showCompletedTodos={showCompletedTodos}
-          handleSetComplete={handleSetComplete}
-          handleDelete={handleDelete}
-          handleClearComplete={handleClearComplete} />
+          handleSetComplete={toggleComplete}
+          handleDelete={deleteTodo}
+          handleClearComplete={handleClearComplete}
+        />
       </div>
-
     </div>
   );
 }
