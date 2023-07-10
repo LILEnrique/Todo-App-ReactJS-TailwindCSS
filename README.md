@@ -39,7 +39,6 @@ const firebaseConfig = {
   appId: "TU_APP_ID",
 };
 
-firebase.initializeApp(firebaseConfig);
 ```
 ### Ejecutar la aplicación 🚀
 
