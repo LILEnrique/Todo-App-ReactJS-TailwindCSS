@@ -1,4 +1,4 @@
-# Todo App 📓
+# Dynamic Todo App 📓
 
 Aplicación construida utilizando ReactJS, Tailwind CSS y Firebase. Proporciona a los usuarios una agenda interactiva para tareas del día a día, con la capacidad de almacenar los datos en Firebase para una persistencia y sincronización en tiempo real.
 
