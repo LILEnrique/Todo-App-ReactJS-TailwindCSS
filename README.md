@@ -39,14 +39,13 @@ const firebaseConfig = {
   appId: "TU_APP_ID",
 };
 
-firebase.initializeApp(firebaseConfig);
 ```
 ### Ejecutar la aplicación 🚀
 
 1. Navega al directorio del proyecto
 
 ```
-cd Todo-App-ReactJS-TailwindCSS
+cd Todo-App-ReactJS-TailwindCSS-Firebase
 ```
 2. Instala las dependencias
 
