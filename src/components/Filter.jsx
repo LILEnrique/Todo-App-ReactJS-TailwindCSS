@@ -22,7 +22,7 @@ const FilterButton = ({ action, active, filter }) => {
       onClick={action}
       className={
         ` hover:text-primary cursor-pointer transition-all duration-300 ease-in-out text-xs ` +
-        (active.toLowerCase().includes(filter.toLowerCase()) ? "text-primary " : "text-zinc-100")
+        (active.toLowerCase().includes(filter.toLowerCase()) ? "text-green-400 " : "text-zinc-100")
       }
     >
       {filter}
